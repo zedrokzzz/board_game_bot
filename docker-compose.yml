@@ -1,0 +1,34 @@
+version: '3.8'
+
+networks:
+  tg_bot_network:
+    driver: bridge
+
+services:
+  bot:
+    container_name: bot
+    build: bot
+    environment:
+      API_TOKEN: ${bottoken}
+    networks:
+      tg_bot_network:
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    hostname: db
+    build: db
+    user: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: tg_bot_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      tg_bot_network:
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
